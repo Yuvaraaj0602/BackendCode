@@ -9,6 +9,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const cors = require("cors");
+const verifyRequest = require("./middleware/apimiddleware.js");
 // const logger = require("morgan");
 const path = require("path");
 const connectDB = require("./db");
@@ -51,68 +52,81 @@ app.get("/", (req, res) => {
 });
 
 // app.use("/api/farmer", require("./routes/farmer")); //Farmer Api
-app.use("/api/crop", require("./routes/crop")); //Crop Api
-app.use("/api/cropCalendar", require("./routes/cropCalendar")); //Crop Api
-app.use("/api/varitie", require("./routes/varities")); //varities Api
-app.use("/api/pest", require("./routes/pest")); //Pest Api
-app.use("/api/pesticide", require("./routes/pesticide")); //Pesticide Api
-app.use("/api/weed", require("./routes/weed")); //weed Api
-app.use("/api/herbicide", require("./routes/herbicide")); //herbicide Api
-app.use("/api/disease", require("./routes/disease"));
-app.use("/api/fungicide", require("./routes/fungicide"));
-app.use("/api/yield-crop", require("./routes/yieldCrop"));
-app.use("/api/add-inventory", require("./routes/inventory"));
-app.use("/api/credit", require("./routes/credit"));
-app.use("/api/support", require("./routes/support"));
-app.use("/api/cropHealth", require("./routes/cropHealth"));
+app.use("/api/crop", verifyRequest, require("./routes/crop")); //Crop Api
+app.use("/api/cropCalendar", verifyRequest, require("./routes/cropCalendar")); //Crop Api
+app.use("/api/varitie", verifyRequest, require("./routes/varities")); //varities Api
+app.use("/api/pest", verifyRequest, require("./routes/pest")); //Pest Api
+app.use("/api/pesticide", verifyRequest, require("./routes/pesticide")); //Pesticide Api
+app.use("/api/weed", verifyRequest, require("./routes/weed")); //weed Api
+app.use("/api/herbicide", verifyRequest, require("./routes/herbicide")); //herbicide Api
+app.use("/api/disease", verifyRequest, require("./routes/disease"));
+app.use("/api/fungicide", verifyRequest, require("./routes/fungicide"));
+app.use("/api/yield-crop", verifyRequest, require("./routes/yieldCrop"));
+app.use("/api/add-inventory", verifyRequest, require("./routes/inventory"));
+app.use("/api/credit", verifyRequest, require("./routes/credit"));
+app.use("/api/support", verifyRequest, require("./routes/support"));
+app.use("/api/cropHealth", verifyRequest, require("./routes/cropHealth"));
 app.use("/api/auth", require("./routes/authentication"));
 app.use("/api/admin", tokenAuth, require("./routes/admin"));
-app.use("/api/farmer", require("./routes/farmer"));
+app.use("/api/farmer", verifyRequest, require("./routes/farmer"));
 app.use("/api", require("./routes/popup.js"));
-app.use("/api", require("./routes/emailsender.js"));
-app.use("/api/farmers", require("./routes/farmerR.js"));
+app.use("/api", verifyRequest, require("./routes/emailsender.js"));
+app.use("/api/farmers", verifyRequest, require("./routes/farmerR.js"));
 app.use("/api", require("./routes/Weather.js"));
-app.use("/api/me", require("./routes/MandiPrices.js"));
-app.use("/api", require("./routes/DataModel.js"));
+app.use("/api/me", verifyRequest, require("./routes/MandiPrices.js"));
+app.use("/api", verifyRequest, require("./routes/DataModel.js"));
 
 //App routes
 
-app.use("/api", require("./routes/fpoRoutes"));
-app.use("/api/appFarmer", require("./routes/appFarmerRoutes.js"));
-app.use("/api", require("./routes/appEditaddress.js"));
-app.use("/api", require("./routes/appEditProfile.js"));
-app.use("/api", require("./routes/appBankDetails.js"));
-app.use("/api", require("./routes/appOtherDetails.js"));
-app.use("/api", require("./routes/appEnqiry.js"));
-app.use("/api", require("./routes/appMandi.js"));
-app.use("/api", require("./routes/appCropRoutes.js"));
-app.use("/api", require("./routes/appVerifyDetails.js"));
-app.use("/api", require("./routes/appNews.js"));
-app.use("/api", require("./routes/appInsightData.js"));
-app.use("/api/market", require("./routes/appMarketInsightYealeyData.js"));
-app.use("/api/appData", require("./routes/appMarketInsight.js"));
-app.use("/api/whatsapp", require("./routes/sendWhatappSMS.js"));
-app.post("/api/upload", upload.single("image"), async (req, res) => {
-  const file = req.file;
-  console.log("file", file);
+app.use("/api", verifyRequest, require("./routes/fpoRoutes"));
+app.use(
+  "/api/appFarmer",
+  verifyRequest,
+  require("./routes/appFarmerRoutes.js")
+);
+app.use("/api", verifyRequest, require("./routes/appEditaddress.js"));
+app.use("/api", verifyRequest, require("./routes/appEditProfile.js"));
+app.use("/api", verifyRequest, require("./routes/appBankDetails.js"));
+app.use("/api", verifyRequest, require("./routes/appOtherDetails.js"));
+app.use("/api", verifyRequest, require("./routes/appEnqiry.js"));
+app.use("/api", verifyRequest, require("./routes/appMandi.js"));
+app.use("/api", verifyRequest, require("./routes/appCropRoutes.js"));
+app.use("/api", verifyRequest, require("./routes/appVerifyDetails.js"));
+app.use("/api", verifyRequest, require("./routes/appNews.js"));
+app.use("/api", verifyRequest, require("./routes/appInsightData.js"));
+app.use(
+  "/api/market",
+  verifyRequest,
+  require("./routes/appMarketInsightYealeyData.js")
+);
+app.use("/api/appData", verifyRequest, require("./routes/appMarketInsight.js"));
+app.use("/api/whatsapp", verifyRequest, require("./routes/sendWhatappSMS.js"));
+app.post(
+  "/api/upload",
+  verifyRequest,
+  upload.single("image"),
+  async (req, res) => {
+    const file = req.file;
+    console.log("file", file);
 
-  if (!file) {
-    return res.status(400).send("File not found");
+    if (!file) {
+      return res.status(400).send("File not found");
+    }
+
+    try {
+      const result = await uploadFile(file);
+      console.log("result", result);
+
+      res.send(result);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      res.status(500).send("Error uploading file");
+    }
   }
-
-  try {
-    const result = await uploadFile(file);
-    console.log("result", result);
-
-    res.send(result);
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    res.status(500).send("Error uploading file");
-  }
-});
+);
 app.get("/images/:key", async (req, res) => {
-  const fileKey = req.params.key; // Get the file key from the request parameters
-  await getFile(fileKey, res); // Call getFile and pass the response object
+  const fileKey = req.params.key;
+  await getFile(fileKey, res);
 });
 
 app.use((err, req, res, next) => {
@@ -136,7 +150,7 @@ app.post("/api/sendsms", async (req, res) => {
     console.error("Error sending SMS:", error);
     res
       .status(500)
-      .json({ message: "Error sending SMS", error: error.message }); // Respond with an error message and details
+      .json({ message: "Error sending SMS", error: error.message });
   }
 });
 
@@ -146,13 +160,10 @@ app.post("/api/sendsms", async (req, res) => {
 app.post("/api/verify-otp", async (req, res) => {
   const { phoneNumber, otp } = req.body;
 
-  // Find the OTP in the database
   const otpRecord = await OTP.findOne({ phoneNumber, otp });
   if (otpRecord) {
-    // OTP is valid
     res.status(200).json({ success: true, otpRecord: otpRecord });
   } else {
-    // OTP is not valid
     res.status(200).json({ success: false });
   }
 });

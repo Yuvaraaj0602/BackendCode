@@ -13,14 +13,11 @@ router.get("me/filter-options", async (req, res) => {
     const filterOptions = {};
 
     mandiData.forEach((item) => {
-      // Create or update state
       filterOptions[item.state] = filterOptions[item.state] || {};
 
-      // Create or update district
       filterOptions[item.state][item.district] =
         filterOptions[item.state][item.district] || {};
 
-      // Add commodity to the district if it doesn't exist already
       filterOptions[item.state][item.district].commodities =
         filterOptions[item.state][item.district].commodities || [];
 
@@ -77,7 +74,6 @@ router.get("/file/fetch-and-store-data", async (req, res) => {
 
 router.delete("/mandi-prices", async (req, res) => {
   try {
-    // Delete all records
     const result = await MandiPrice.deleteMany({});
 
     res.json({

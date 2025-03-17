@@ -34,7 +34,6 @@ const fetchDataAndStoreInDB = async () => {
         continue;
       }
 
-      // Create a new MandiPrice instance and save it
       const mandiPrice = new MandiPrice({
         state: record.state,
         district: record.district,

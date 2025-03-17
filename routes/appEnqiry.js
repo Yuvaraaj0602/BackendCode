@@ -9,7 +9,7 @@ router.post("/commodity", commodityController.createOrUpdateCommodity);
 router.get("/commodity/:uid", commodityController.getCommodityByUid);
 
 // Route for fetching all commodities
-router.get("/commodities", commodityController.getAllCommodities);
+router.get("/commodity/commodities", commodityController.getAllCommodities);
 
 // Route to update a single commodity by UID and _id
 router.put(

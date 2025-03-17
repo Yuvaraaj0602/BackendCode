@@ -3,13 +3,23 @@ const FpoOrganization = require("../models/appFPOUser");
 // Update FPO Organization Profile
 exports.updateProfile = async (req, res) => {
   try {
-    const { _id } = req.body;
-    const updateData = req.body;
+    const { _id, ...updateData } = req.body;
+
+    if (!_id || !mongoose.Types.ObjectId.isValid(_id)) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid or missing FPO organization ID",
+        error: {
+          code: "INVALID_FPO_ID",
+          description: "Please provide a valid MongoDB ObjectId.",
+        },
+      });
+    }
 
     const updatedProfile = await FpoOrganization.findByIdAndUpdate(
       _id,
-      updateData,
-      { new: true }
+      { $set: updateData },
+      { new: true, runValidators: true }
     );
 
     if (!updatedProfile) {
@@ -30,9 +40,9 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating FPO organization:", error);
-    res.status(400).send({
+    res.status(500).send({
       success: false,
-      message: "Error updating FPO organization",
+      message: "Internal server error while updating FPO organization",
       error: {
         code: "FPO_ORGANIZATION_UPDATE_ERROR",
         description: error.message,

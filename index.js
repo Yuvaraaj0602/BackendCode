@@ -4,6 +4,7 @@ const multer = require("multer");
 const fs = require("fs").promises;
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
+const scheduleFetchData = require("./middleware/scheduler.js");
 const sendWhatsappSMS = require("./routes/sendWhatappSMS.js");
 const express = require("express");
 const app = express();
@@ -45,7 +46,8 @@ app.use("/api/check-admin", tokenAuth, adminAuthorizer);
 app.use("/api/check-superAdmin", tokenAuth, superAdminAuthorizer);
 
 const upload = multer({ storage: multer.memoryStorage() });
-
+//scheduler
+scheduleFetchData();
 //Routes
 app.get("/", (req, res) => {
   res.send("Server is working");

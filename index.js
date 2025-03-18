@@ -74,7 +74,7 @@ app.use("/api/farmer", verifyRequest, require("./routes/farmer"));
 app.use("/api", require("./routes/popup.js"));
 app.use("/api", verifyRequest, require("./routes/emailsender.js"));
 app.use("/api/farmers", verifyRequest, require("./routes/farmerR.js"));
-app.use("/api", require("./routes/Weather.js"));
+app.use("/api/today", require("./routes/Weather.js"));
 app.use("/api/me", verifyRequest, require("./routes/MandiPrices.js"));
 app.use("/api", verifyRequest, require("./routes/DataModel.js"));
 

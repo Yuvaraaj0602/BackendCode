@@ -7,9 +7,6 @@ const SupportCreditSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    description: {
-      type: String,
-    },
   },
   { timestamps: true }
 );

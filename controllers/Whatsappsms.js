@@ -20,7 +20,7 @@ exports.sendOtp = async (req, res) => {
 
     const apiPayload = {
       apiKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZGMzYzczMDY2MWQzM2U0NzJjOTQ4YiIsIm5hbWUiOiJEZWFsZXIgcmVnaXN0cmF0aW9uIiwiYXBwTmFtZSI6IkFpU2Vuc3kiLCJjbGllbnRJZCI6IjY0NzQ2ZTg5ODhmNDI3MGJkOTgzMGM1MyIsImFjdGl2ZVBsYW4iOiJOT05FIiwiaWF0IjoxNzA4OTMyMjExfQ.Y8Y_7Z5-gD6LJbjbWXcJEgrcfK-r_3eXf6JP6JGF5NA", // replace with your actual apiKey
+        process.env.Whatsapp_api_key, // replace with your actual apiKey
       campaignName: "OTP Verificatiom",
       destination: phoneNumber,
       userName: "Dealer registration",
@@ -48,7 +48,7 @@ exports.sendOtp = async (req, res) => {
     };
 
     const response = await axios.post(
-      " https://backend.aisensy.com/campaign/t1/api/v2",
+      process.env.Whatsapp_api_url,
       apiPayload
     );
 
